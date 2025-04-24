@@ -1,3 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 body {
   margin: 0;
   font-family: sans-serif;
@@ -9,12 +14,6 @@ main {
   padding: 2rem;
   max-width: 800px;
   margin: 0 auto;
-}
-
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #000000;
 }
 
 h2 {
@@ -29,6 +28,7 @@ p {
 
 ul {
   padding-left: 1.5rem;
+  color:#000000;
 }
 
 a {
@@ -72,6 +72,9 @@ header {
   padding: 1rem;
 }
 
+h1 {
+  @import "tailwindcss";
+}
  
 main {
   flex: 1;
@@ -111,8 +114,4 @@ footer {
 
 .footer-link:hover {
   text-decoration: underline;
-}
-
-main {
-  flex-grow: 1;
 }

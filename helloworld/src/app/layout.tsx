@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
+import "tailwindcss";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,9 +45,9 @@ export default function RootLayout({
           <footer className="w-full text-left bg-gray-100 p-4">
             <p>© 2025 My Website</p>
             <nav className="nav-links">
-              <a href="/contact" className="footer-link">☎️ Kontak Aku</a> |{" "}
-              <a href="/about" className="footer-link">👤 Tentang</a> |{" "}
-              <a href="/" className="footer-link">🏠 Beranda</a>
+            <Link href = "/contact">☎️ Kontak Aku</Link> |{" "}
+            <Link href = "/about">👤 Tentang</Link> |{" "}
+            <Link href = "/">🏠 Beranda</Link> 
             </nav>
           </footer>
 
