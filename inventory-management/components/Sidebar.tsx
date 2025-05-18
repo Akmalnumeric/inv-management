@@ -1,11 +1,54 @@
 "use client";
 
-import { Home, BarChart2, Package, Users, Settings, DollarSignIcon, LucideShoppingCart, Menu,} from "lucide-react";
+import {
+  Home,
+  BarChart2,
+  Package,
+  Users,
+  Settings,
+  DollarSignIcon,
+  LucideShoppingCart,
+  Menu,
+} from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+
+  useEffect(() => {
+    // Ambil dari URL kalau redirect dari login
+    const params = new URLSearchParams(window.location.search);
+    const urlUsername = params.get("username");
+
+    if (urlUsername) {
+      localStorage.setItem("isLoggedIn", "true");
+      localStorage.setItem("username", urlUsername);
+      setLoggedIn(true);
+      setUsername(urlUsername);
+
+      // Hapus parameter dari URL
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+    } else {
+      // Ambil dari localStorage kalau sudah login sebelumnya
+      const isLoggedIn = localStorage.getItem("isLoggedIn");
+      const storedUsername = localStorage.getItem("username");
+      if (isLoggedIn === "true" && storedUsername) {
+        setLoggedIn(true);
+        setUsername(storedUsername);
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("username");
+    setLoggedIn(false);
+    setUsername("");
+  };
 
   return (
     <div className="flex h-screen">
@@ -14,7 +57,6 @@ export default function Sidebar() {
           isOpen ? "w-64 h-234.5" : "w-16"
         }`}
       >
-    
         <div className="flex items-center justify-between mb-6">
           {isOpen && <h1 className="text-xl font-bold tracking-tight font-[Arial]">INVENTORY360</h1>}
           <button
@@ -38,11 +80,30 @@ export default function Sidebar() {
         </div>
 
         {isOpen && (
-          <div className="flex items-center gap-2 mt-6">
-            <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-black font-bold">
-              A
-            </div>
-            <span className="text-sm">Akmal Haidar</span>
+          <div className="mt-6 text-sm">
+            {!loggedIn ? (
+              <a
+                href="http://localhost:3002"
+                className="bg-lime-500 block text-center text-black font-semibold p-2 rounded hover:bg-lime-600"
+              >
+                Login
+              </a>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-blue-400 flex items-center justify-center text-black font-bold">
+                    {username.charAt(0).toUpperCase()}
+                  </div>
+                  <span>{username}</span>
+                </div>
+                <button
+                  onClick={handleLogout}
+                  className="bg-red-500 text-white text-sm p-1 rounded hover:bg-red-600"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         )}
       </main>
