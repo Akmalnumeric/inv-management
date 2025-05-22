@@ -83,7 +83,7 @@ export default function Sidebar() {
           <div className="mt-6 text-sm">
             {!loggedIn ? (
               <a
-                href="http://localhost:3002"
+                href="/auth"
                 className="bg-lime-500 block text-center text-black font-semibold p-2 rounded hover:bg-lime-600"
               >
                 Login

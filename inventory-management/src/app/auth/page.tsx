@@ -10,7 +10,7 @@ export default function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const url = isLogin ? "http://localhost:3002/login" : "http://localhost:3002/signup";
+    const url = isLogin ? "http://localhost:3001/login" : "http://localhost:3001/signup";
 
     const res = await fetch(url, {
       method: "POST",
@@ -23,14 +23,14 @@ export default function AuthPage() {
     if (data.success) {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("username", data.username || email);
-      router.push("/"); // redirect ke dashboard
+      router.push("/"); 
     } else {
       alert(data.message || data);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10">
+    <div className="max-w-md mx-auto mt-10 text-white">
       <h1 className="text-2xl font-bold mb-4">{isLogin ? "Login" : "Sign Up"}</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
