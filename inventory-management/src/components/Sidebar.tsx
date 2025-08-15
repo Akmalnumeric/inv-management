@@ -2,25 +2,24 @@
 
 import {
   Home,
-  BarChart2,
-  Package,
-  Users,
-  Settings,
-  DollarSignIcon,
-  LucideShoppingCart,
   Menu,
   PersonStanding,
+  Table2Icon,
+  ShoppingBasket,
 } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Swal from "sweetalert2";
+import { table } from "console";
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
-    // Ambil dari URL kalau redirect dari login
     const params = new URLSearchParams(window.location.search);
     const urlUsername = params.get("username");
 
@@ -30,7 +29,6 @@ export default function Sidebar() {
       setLoggedIn(true);
       setUsername(urlUsername);
 
-      // Hapus parameter dari URL
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
     } else {
@@ -48,6 +46,7 @@ export default function Sidebar() {
     localStorage.removeItem("username");
     setLoggedIn(false);
     setUsername("");
+    router.replace("/auth");
   };
 
   return (
@@ -70,13 +69,17 @@ export default function Sidebar() {
         <div className="flex-1">
           <nav className="space-y-4 mx-1">
             <SidebarLink icon={Home} label="Home" href="/" isOpen={isOpen} />
-            <SidebarLink icon={DollarSignIcon} label="Sell" href="/sell" isOpen={isOpen} />
-            <SidebarLink icon={BarChart2} label="Reporting" href="/reporting" badge="2" isOpen={isOpen} />
-            <SidebarLink icon={LucideShoppingCart} label="Catalog" href="/catalog" isOpen={isOpen} />
-            <SidebarLink icon={Package} label="Inventory" href="/inv" isOpen={isOpen} />
-            <SidebarLink icon={Users} label="Customers" href="/customers" isOpen={isOpen} />
-            <SidebarLink icon={Settings} label="Setup" href="/setup" isOpen={isOpen} />
-            <SidebarLink icon={PersonStanding} label="User Management" href="/userManagement" isOpen={isOpen} />
+            <ProtectedSidebarLink
+              icon={PersonStanding}
+              label="User Management"
+              href="/userManagement"
+              isOpen={isOpen}
+              isLoggedIn={loggedIn}
+            />
+            <SidebarLink icon={Table2Icon} label="Categories" href="/category" isOpen={isOpen}
+            />
+            <SidebarLink icon={ShoppingBasket} label="Barang" href="/items" isOpen={isOpen}
+            />
           </nav>
         </div>
 
@@ -112,6 +115,7 @@ export default function Sidebar() {
   );
 }
 
+// Link biasa
 function SidebarLink({ icon: Icon, label, href, badge, isOpen }: any) {
   return (
     <Link href={href} className="flex items-center gap-3 text-sm hover:text-lime-300">
@@ -125,5 +129,39 @@ function SidebarLink({ icon: Icon, label, href, badge, isOpen }: any) {
         </>
       )}
     </Link>
+  );
+}
+
+// Link yang butuh login
+function ProtectedSidebarLink({ icon: Icon, label, href, isOpen, isLoggedIn }: any) {
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (!isLoggedIn) {
+      Swal.fire({
+        title: "Anda belum login",
+        text: "Silahkan login terlebih dahulu untuk mengakses halaman ini",
+        icon: "warning",
+        confirmButtonText: "Login sekarang",
+        showCancelButton: true,
+        cancelButtonText: "Nanti",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push("/auth");
+        }
+      });
+    } else {
+      router.push(href);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className="flex items-center gap-3 text-sm hover:text-lime-300 w-full text-left"
+    >
+      <Icon className="w-5 h-5" />
+      {isOpen && <span className="flex-1">{label}</span>}
+    </button>
   );
 }
